@@ -938,7 +938,7 @@ pub unsafe extern "C" fn modbus_tcp_accept(mut ctx: *mut modbus_t,
         ::std::mem::size_of::<sockaddr_in>() as libc::c_ulong as socklen_t;
     /* Inherit socket flags and use accept4 call */
     (*ctx).s =
-        accept4(*s, &mut addr as *mut sockaddr_in as *mut sockaddr,
+        libc::accept4(*s, &mut addr as *mut sockaddr_in as *mut libc::sockaddr,
                 &mut addrlen, SOCK_CLOEXEC as libc::c_int);
     if (*ctx).s == -(1 as libc::c_int) { return -(1 as libc::c_int) }
     if (*ctx).debug != 0 {
@@ -965,7 +965,7 @@ pub unsafe extern "C" fn modbus_tcp_pi_accept(mut ctx: *mut modbus_t,
             socklen_t;
     /* Inherit socket flags and use accept4 call */
     (*ctx).s =
-        accept4(*s, &mut addr as *mut sockaddr_storage as *mut sockaddr,
+        libc::accept4(*s, &mut addr as *mut sockaddr_storage as *mut libc::sockaddr,
                 &mut addrlen, SOCK_CLOEXEC as libc::c_int);
     if (*ctx).s == -(1 as libc::c_int) { return -(1 as libc::c_int) }
     if (*ctx).debug != 0 {
