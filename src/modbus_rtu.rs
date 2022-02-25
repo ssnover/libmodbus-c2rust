@@ -202,7 +202,7 @@ pub struct _modbus_backend {
     pub close: Option<unsafe extern "C" fn(_: *mut modbus_t) -> ()>,
     pub flush: Option<unsafe extern "C" fn(_: *mut modbus_t) -> libc::c_int>,
     pub select: Option<unsafe extern "C" fn(_: *mut modbus_t, _: *mut fd_set,
-                                            _: *mut timeval, _: libc::c_int)
+                                            _: *mut timeval)
                            -> libc::c_int>,
     pub free: Option<unsafe extern "C" fn(_: *mut modbus_t) -> ()>,
 }
@@ -610,7 +610,7 @@ unsafe extern "C" fn crc16(mut buffer: *mut uint8_t,
     return ((crc_hi as libc::c_int) << 8 as libc::c_int |
                 crc_lo as libc::c_int) as uint16_t;
 }
-unsafe extern "C" fn _modbus_rtu_prepare_response_tid(mut req: *const uint8_t,
+unsafe extern "C" fn _modbus_rtu_prepare_response_tid(mut _req: *const uint8_t,
                                                       mut req_length:
                                                           *mut libc::c_int)
  -> libc::c_int {
@@ -718,7 +718,7 @@ unsafe extern "C" fn _modbus_rtu_pre_check_confirmation(mut ctx:
                                                             *const uint8_t,
                                                         mut rsp:
                                                             *const uint8_t,
-                                                        mut rsp_length:
+                                                        mut _rsp_length:
                                                             libc::c_int)
  -> libc::c_int {
     /* Check responding slave is the slave we requested (except for broacast
@@ -1243,8 +1243,7 @@ unsafe extern "C" fn _modbus_rtu_flush(mut ctx: *mut modbus_t)
 }
 unsafe extern "C" fn _modbus_rtu_select(mut ctx: *mut modbus_t,
                                         mut rset: *mut fd_set,
-                                        mut tv: *mut timeval,
-                                        mut length_to_read: libc::c_int)
+                                        mut tv: *mut timeval)
  -> libc::c_int {
     let mut s_rc: libc::c_int = 0;
     loop  {
@@ -1299,7 +1298,6 @@ unsafe extern "C" fn _modbus_rtu_free(mut ctx: *mut modbus_t) {
 }
 #[no_mangle]
 pub static mut _modbus_rtu_backend: modbus_backend_t =
-    unsafe {
         {
             let mut init =
                 _modbus_backend{backend_type:
@@ -1419,9 +1417,7 @@ pub static mut _modbus_rtu_backend: modbus_backend_t =
                                                                   _:
                                                                       *mut fd_set,
                                                                   _:
-                                                                      *mut timeval,
-                                                                  _:
-                                                                      libc::c_int)
+                                                                      *mut timeval)
                                                  -> libc::c_int),
                                 free:
                                     Some(_modbus_rtu_free as
@@ -1429,7 +1425,6 @@ pub static mut _modbus_rtu_backend: modbus_backend_t =
                                                                       *mut modbus_t)
                                                  -> ()),};
             init
-        }
     };
 #[no_mangle]
 pub unsafe extern "C" fn modbus_new_rtu(mut device: *const libc::c_char,

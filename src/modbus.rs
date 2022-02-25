@@ -2703,7 +2703,7 @@ pub unsafe extern "C" fn strlcpy(mut dest: *mut libc::c_char,
             if !(*fresh34 != 0) { break ; }
         }
     }
-    return (s.wrapping_offset_from(src) as libc::c_long -
+    return (s.offset(src as isize) as libc::c_long -
                 1 as libc::c_int as libc::c_long) as size_t;
     /* count does not include NUL */
 }

@@ -15,6 +15,9 @@ name = "libmodbus"
 path = "src/c2rust-lib.rs"
 crate-type = ["staticlib", "rlib"]
 
+[[bin]]
+name = "modbus_client"
+path = "src/main.rs"
 
 [dependencies]
 libc = "0.2"
